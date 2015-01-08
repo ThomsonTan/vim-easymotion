@@ -1,7 +1,7 @@
 scriptencoding utf-8
 " EasyMotion - Vim motions on speed!
 "
-" Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
+" Author: Kim SilkebÃ¦kken <kim.silkebaekken+vim@gmail.com>
 "         haya14busa <hayabusa1419@gmail.com>
 " Source: https://github.com/Lokaltog/vim-easymotion
 "=============================================================================
@@ -126,10 +126,17 @@ function! EasyMotion#S(num_strokes, visualmode, direction) " {{{
         " 'F' motion is exclusive
         let is_inclusive = mode(1) ==# 'no' ? 1 : 0
     endif
+
+    syntax off
+
     let s:flag.find_bd = a:direction == 2 ? 1 : 0
     let re = s:findMotion(a:num_strokes, a:direction)
     if s:handleEmpty(re, a:visualmode) | return | endif
     call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', is_inclusive)
+
+    redraw!
+    syntax on
+
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 function! EasyMotion#T(num_strokes, visualmode, direction) " {{{
@@ -196,6 +203,8 @@ function! EasyMotion#JK(visualmode, direction) " {{{
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
     let s:flag.linewise = 1
 
+    syntax off
+
     if g:EasyMotion_startofline
         call s:EasyMotion('^\(\w\|\s*\zs\|$\)', a:direction, a:visualmode ? visualmode() : '', 0)
     else
@@ -203,6 +212,10 @@ function! EasyMotion#JK(visualmode, direction) " {{{
         let pattern = printf('^.\{-}\zs\(\%%<%dv.\%%>%dv\|$\)', c + 1, c)
         call s:EasyMotion(pattern, a:direction, a:visualmode ? visualmode() : '', 0)
     endif
+
+    redraw!
+    syntax on
+
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 function! EasyMotion#Sol(visualmode, direction) " {{{
